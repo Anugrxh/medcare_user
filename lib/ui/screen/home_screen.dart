@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:medcare_user/ui/screen/current_booking.dart';
 import 'package:medcare_user/ui/screen/history_screen.dart';
+import 'package:medcare_user/ui/screen/login_screen.dart';
+import 'package:medcare_user/ui/screen/token_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
-  String label = 'Dash Board';
+  String label = 'Dashboard';
 
   @override
   void initState() {
@@ -25,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen>
           label = 'History';
           break;
         case 2:
-          label = 'Tokens';
+          label = 'Token Status';
           break;
         case 3:
           label = 'Dash Board';
@@ -187,13 +190,9 @@ class _HomeScreenState extends State<HomeScreen>
                           tabController.animateTo(index);
                         },
                       ),
-                      HistorySection(),
-                      SizedBox(
-                        child: Text("Token"),
-                      ),
-                      SizedBox(
-                        child: Text("Booking"),
-                      ),
+                      const HistorySection(),
+                      const Token(),
+                      const CurrentBokingScreen(),
                     ],
                   ),
                 ),
@@ -248,7 +247,95 @@ class DashboardSection extends StatelessWidget {
             imageUrl: "assets/image/logout.png",
             label: "Logout",
             onPressed: () {
-              //logout
+              showDialog(
+                  context: context,
+                  builder: (ctx) => Dialog(
+                        backgroundColor: Color(0xFF797EF6),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 20),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "Do you want to logout?",
+                                style: TextStyle(
+                                  shadows: <Shadow>[
+                                    Shadow(
+                                      offset: Offset(1.0, 1.0),
+                                      blurRadius: 20,
+                                      color: Color.fromARGB(100, 0, 0, 0),
+                                    )
+                                  ],
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.normal,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const Login()));
+                                    },
+                                    child: Material(
+                                      elevation: 10,
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.white,
+                                      child: const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 15),
+                                        child: Center(
+                                            child: Text(
+                                          "Yes",
+                                          style: TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )),
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Material(
+                                      elevation: 10,
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.white,
+                                      child: const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 15),
+                                        child: Center(
+                                            child: Text(
+                                          "No",
+                                          style: TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ));
             },
           ),
         ],

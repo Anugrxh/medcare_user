@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:medcare_user/ui/screen/home_screen.dart';
-import 'package:medcare_user/ui/screen/login_screen.dart';
-import 'package:medcare_user/ui/screen/forget_screen.dart';
-import 'package:medcare_user/ui/screen/history_screen.dart';
-import 'package:medcare_user/ui/screen/token_screen.dart';
+
+import 'ui/screen/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:medcare_user/ui/screen/home_screen.dart';
-import 'package:medcare_user/ui/screen/signup_screen.dart';
+import 'package:medcare_user/ui/screen/login_screen.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<SignUp> createState() => _SignUpState();
 }
 
-class _LoginState extends State<Login> {
+class _SignUpState extends State<SignUp> {
   TextEditingController emailController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool _isObsecure = true;
@@ -30,8 +30,8 @@ class _LoginState extends State<Login> {
             Form(
               autovalidateMode: AutovalidateMode.always,
               key: formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+              child: ListView(
+                shrinkWrap: true,
                 children: [
                   const SizedBox(
                     height: 25,
@@ -44,7 +44,7 @@ class _LoginState extends State<Login> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "Welcome",
+                          "New User",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 25,
@@ -68,7 +68,7 @@ class _LoginState extends State<Login> {
 
                   // ignore: prefer_const_constructors
                   Text(
-                    "Login",
+                    "Sign up",
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       shadows: <Shadow>[
@@ -86,7 +86,7 @@ class _LoginState extends State<Login> {
                   ),
 
                   const SizedBox(
-                    height: 200,
+                    height: 60,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -94,7 +94,7 @@ class _LoginState extends State<Login> {
                       controller: emailController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Enter email";
+                          return "Enter Name";
                         }
                       },
                       obscureText: false,
@@ -106,7 +106,7 @@ class _LoginState extends State<Login> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
-                          labelText: 'Enter e-mail ',
+                          labelText: 'Name',
                           suffixIcon: Icon(Icons.person_add_alt_1_outlined)),
                     ),
 
@@ -130,7 +130,101 @@ class _LoginState extends State<Login> {
                     // ),
                   ),
                   const SizedBox(
-                    height: 30,
+                    height: 15,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.trim().length < 10) {
+                          return "Enter Phone Number";
+                        }
+                      },
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 10,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        labelText: 'Phone',
+                      ),
+                    ),
+
+                    //TextField(
+                    //   decoration: InputDecoration(
+                    //     border: OutlineInputBorder(
+                    //       borderRadius: BorderRadius.circular(30.0),
+                    //     ),
+                    //     contentPadding: EdgeInsets.symmetric(
+                    //       horizontal: 20,
+                    //       vertical: 15,
+                    //     ),
+                    //     filled: true,
+                    //     hintStyle: TextStyle(color: Colors.grey[800]),
+                    //     hintText: "Enter Your Password",
+                    //     fillColor: Color(0xF9F7F7),
+                    //     suffixIcon: Icon(Icons.remove_red_eye),
+                    //   ),
+                    // ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.trim().length < 0) {
+                          return "Enter Date of birth";
+                        }
+                      },
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 10,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        labelText: 'Date of birth',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.trim().length < 2) {
+                          return "Enter Your Sex";
+                        }
+                      },
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 10,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        labelText: 'Sex',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -185,15 +279,54 @@ class _LoginState extends State<Login> {
                     // ),
                   ),
                   const SizedBox(
-                    height: 50,
+                    height: 10,
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.trim().length < 8) {
+                          return "Enter password";
+                        }
+                      },
+                      obscureText: _isObsecure,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 10,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        labelText: 'Confirm Password',
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isObsecure = !_isObsecure;
+                            });
+                          },
+                          child: Icon(
+                            _isObsecure
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+
                   GestureDetector(
                     onTap: () {
                       if (formKey.currentState!.validate()) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const HomeScreen()));
+                                builder: (context) => const Login()));
                       }
                     },
                     child: Material(
@@ -204,35 +337,12 @@ class _LoginState extends State<Login> {
                         padding:
                             EdgeInsets.symmetric(vertical: 10, horizontal: 30),
                         child: Text(
-                          "Login",
+                          "SignUp",
                           textAlign: TextAlign.center,
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 60,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Dont have an account?"),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const SignUp()));
-                          },
-                          child: Text(
-                            "SignUp",
-                            style: TextStyle(color: Colors.blue),
-                          ))
-                    ],
                   ),
                 ],
               ),

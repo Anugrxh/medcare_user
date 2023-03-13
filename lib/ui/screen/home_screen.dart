@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:medcare_user/ui/screen/current_booking.dart';
 import 'package:medcare_user/ui/screen/history_screen.dart';
 import 'package:medcare_user/ui/screen/login_screen.dart';
+import 'package:medcare_user/ui/screen/profile_screen.dart';
 import 'package:medcare_user/ui/screen/token_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -55,6 +56,23 @@ class _HomeScreenState extends State<HomeScreen>
               width: MediaQuery.of(context).size.width,
               fit: BoxFit.fitWidth,
             ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 24, right: 18),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ProfileScreeen()));
+                  },
+                  icon: Icon(
+                    Icons.person_4_outlined,
+                  ),
+                ),
+              ),
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     ),
                                     Expanded(
                                       child: Text(
-                                        'We Care for you\nWith the jhelp of top class Doctor',
+                                        'We Care for you\nWith the help of top class Doctor',
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                           shadows: <Shadow>[

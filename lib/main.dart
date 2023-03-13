@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:medcare_user/ui/screen/home_screen.dart';
+import 'package:medcare_user/ui/screen/login_screen.dart';
+import 'package:medcare_user/ui/screen/profile_screen.dart';
+import 'package:medcare_user/ui/screen/signup_screen.dart';
 
 import 'ui/screen/splash_screen.dart';
 
@@ -18,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const SplashScreen(),
+      home: const Login(),
     );
   }
 }

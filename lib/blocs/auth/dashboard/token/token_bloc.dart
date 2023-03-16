@@ -8,7 +8,16 @@ class TokenBloc extends Bloc<TokenEvent, TokenState> {
   TokenBloc() : super(TokenInitialState()) {
     on<TokenEvent>((event, emit) {
       emit(TokenLoadingState());
-      try {} catch (e, s) {}
+      try {
+
+
+
+
+      } catch (e, s) 
+      
+      
+      
+      {}
     });
   }
 }

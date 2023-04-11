@@ -1,12 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medcare_user/blocs/patients/patients_and_appointments/patients_and_appointments_bloc.dart';
 
+import '../../widgets/custom_action_button.dart';
+import '../../widgets/custom_alert_dialog.dart';
 import '../../widgets/custom_card.dart';
+import '../../widgets/token_card.dart';
 import '../login_screen.dart';
 
-class DashboardSection extends StatelessWidget {
+class DashboardSection extends StatefulWidget {
   const DashboardSection({
     super.key,
   });
+
+  @override
+  State<DashboardSection> createState() => _DashboardSectionState();
+}
+
+class _DashboardSectionState extends State<DashboardSection> {
+  final PatientsAndAppointmentsBloc patientsAndAppointmentsBloc =
+      PatientsAndAppointmentsBloc();
+
+  @override
+  void initState() {
+    super.initState();
+    patientsAndAppointmentsBloc.add(PatientsAndAppointmentsEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,34 +34,90 @@ class DashboardSection extends StatelessWidget {
       child: Stack(
         alignment: Alignment.topCenter,
         children: [
-          ListView(
-            padding: const EdgeInsets.only(
-              top: 250,
-              left: 20,
-              right: 20,
-            ),
-            children: [
-              Text(
-                'Todays Tokens',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+          BlocProvider<PatientsAndAppointmentsBloc>.value(
+            value: patientsAndAppointmentsBloc,
+            child: BlocConsumer<PatientsAndAppointmentsBloc,
+                PatientsAndAppointmentsState>(
+              listener: (context, state) {
+                if (state is PatientsAndAppointmentsFailureState) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => CustomAlertDialog(
+                      title: 'Failure',
+                      message: state.message,
+                      primaryButtonLabel: 'Ok',
                     ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              ListView(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                children: [
-                  Container(
-                    height: 200,
-                    color: Colors.red,
-                  )
-                ],
-              ),
-            ],
+                  );
+                }
+              },
+              builder: (context, state) {
+                return ListView(
+                  padding: const EdgeInsets.only(
+                    top: 250,
+                    left: 20,
+                    right: 20,
+                  ),
+                  children: [
+                    Text(
+                      'Todays Tokens',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    state is PatientsAndAppointmentsLoadingState
+                        ? const SizedBox(
+                            height: 1,
+                            child: LinearProgressIndicator(),
+                          )
+                        : const Divider(
+                            height: 1,
+                          ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    state is PatientsAndAppointmentsSuccessState
+                        ? state.appointments.isNotEmpty
+                            ? ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                itemBuilder: (context, index) => TokenCard(
+                                  patientAppointmentDetails:
+                                      state.appointments[index],
+                                ),
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(
+                                  height: 10,
+                                ),
+                                itemCount: state.appointments.length,
+                              )
+                            : const Center(child: Text('No Patients Found!'))
+                        : state is PatientsAndAppointmentsFailureState
+                            ? Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CustomActionButton(
+                                      iconData: Icons.replay_outlined,
+                                      onPressed: () {
+                                        patientsAndAppointmentsBloc.add(
+                                            PatientsAndAppointmentsEvent());
+                                      },
+                                      label: 'Retry',
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox(),
+                  ],
+                );
+              },
+            ),
           ),
           CustomPaint(
             size: const Size(double.infinity, 250),

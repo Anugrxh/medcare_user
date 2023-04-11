@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -17,6 +18,9 @@ class PatientAppointmentsBloc
           'get_patient_appointments',
           params: {
             'search_patient_id': event.patientId,
+            'search_date': event.forCurrentDay
+                ? DateFormat('yyyy-MM-dd').format(DateTime.now())
+                : null,
           },
         );
 

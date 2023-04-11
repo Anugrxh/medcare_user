@@ -40,7 +40,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
           color: Colors.black54,
         ),
         title: Text(
-          'Patient Details',
+          'Appointments',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -48,141 +48,134 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
         ),
         backgroundColor: Colors.white,
       ),
-      body: Center(
-        child: SizedBox(
-          width: 1000,
-          child: BlocProvider<PatientAppointmentsBloc>.value(
-            value: patientAppointmentsBloc,
-            child:
-                BlocConsumer<PatientAppointmentsBloc, PatientAppointmentsState>(
-              listener: (context, state) {
-                if (state is PatientAppointmentsFailureState) {
-                  showDialog(
-                    context: context,
-                    builder: (context) => CustomAlertDialog(
-                      title: 'Failure',
-                      message: state.message,
-                      primaryButtonLabel: 'Ok',
+      body: BlocProvider<PatientAppointmentsBloc>.value(
+        value: patientAppointmentsBloc,
+        child: BlocConsumer<PatientAppointmentsBloc, PatientAppointmentsState>(
+          listener: (context, state) {
+            if (state is PatientAppointmentsFailureState) {
+              showDialog(
+                context: context,
+                builder: (context) => CustomAlertDialog(
+                  title: 'Failure',
+                  message: state.message,
+                  primaryButtonLabel: 'Ok',
+                ),
+              );
+            }
+          },
+          builder: (context, state) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    '#${widget.patientDetails['id']}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black45,
+                      fontSize: 15,
                     ),
-                  );
-                }
-              },
-              builder: (context, state) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Text(
-                      '#${widget.patientDetails['id']}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black45,
-                        fontSize: 15,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      widget.patientDetails['name'],
-                      style:
-                          Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      '${getAge(DateTime.parse(widget.patientDetails['dob'].toString()))}  ${widget.patientDetails['sex']}',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54,
-                          ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      widget.patientDetails['phone_number'],
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54,
-                          ),
-                    ),
-                    const SizedBox(height: 20),
-                    state is PatientAppointmentsLoadingState
-                        ? const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: SizedBox(
-                              height: 1,
-                              child: LinearProgressIndicator(),
-                            ),
-                          )
-                        : const Divider(
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    widget.patientDetails['name'],
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    '${getAge(DateTime.parse(widget.patientDetails['dob'].toString()))}  ${widget.patientDetails['sex']}',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54,
+                        ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    widget.patientDetails['phone_number'],
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54,
+                        ),
+                  ),
+                  const SizedBox(height: 20),
+                  state is PatientAppointmentsLoadingState
+                      ? const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: SizedBox(
                             height: 1,
+                            child: LinearProgressIndicator(),
                           ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Appointment History',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black45,
-                        fontSize: 15,
-                      ),
+                        )
+                      : const Divider(
+                          height: 1,
+                        ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Appointment History',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black45,
+                      fontSize: 15,
                     ),
-                    Expanded(
-                      child: state is PatientAppointmentsSuccessState
-                          ? state.appointments.isNotEmpty
-                              ? SingleChildScrollView(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 20,
-                                    horizontal: 10,
-                                  ),
-                                  child: Wrap(
-                                    spacing: 20,
-                                    runSpacing: 20,
-                                    alignment: WrapAlignment.start,
-                                    children: List<Widget>.generate(
-                                      state.appointments.length,
-                                      (index) => PatientAppointmentCard(
-                                        patientAppointmentDetails:
-                                            state.appointments[index],
-                                      ),
+                  ),
+                  Expanded(
+                    child: state is PatientAppointmentsSuccessState
+                        ? state.appointments.isNotEmpty
+                            ? ListView.separated(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 15,
+                                ),
+                                itemBuilder: (context, index) =>
+                                    PatientAppointmentCard(
+                                  patientAppointmentDetails:
+                                      state.appointments[index],
+                                ),
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(height: 10),
+                                itemCount: state.appointments.length,
+                              )
+                            : const Center(child: Text('No Doctors Found!'))
+                        : state is PatientAppointmentsFailureState
+                            ? Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CustomActionButton(
+                                      iconData: Icons.replay_outlined,
+                                      onPressed: () {
+                                        patientAppointmentsBloc.add(
+                                          PatientAppointmentsEvent(
+                                            patientId:
+                                                widget.patientDetails['id'],
+                                          ),
+                                        );
+                                      },
+                                      label: 'Retry',
                                     ),
-                                  ),
-                                )
-                              : const Center(child: Text('No Doctors Found!'))
-                          : state is PatientAppointmentsFailureState
-                              ? Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      CustomActionButton(
-                                        iconData: Icons.replay_outlined,
-                                        onPressed: () {
-                                          patientAppointmentsBloc.add(
-                                            PatientAppointmentsEvent(
-                                              patientId:
-                                                  widget.patientDetails['id'],
-                                            ),
-                                          );
-                                        },
-                                        label: 'Retry',
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : const SizedBox(),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox(),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

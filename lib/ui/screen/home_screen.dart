@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medcare_user/ui/widgets/custom_card.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'home_screen_sections/dashboard_section.dart';
 import 'home_screen_sections/patients_section.dart';
@@ -19,6 +20,21 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   void initState() {
+    Future.delayed(
+      const Duration(
+        milliseconds: 100,
+      ),
+      () {
+        if (Supabase.instance.client.auth.currentUser == null) {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => const Login(),
+            ),
+            (route) => true,
+          );
+        }
+      },
+    );
     tabController = TabController(length: 3, vsync: this);
     tabController.addListener(() {
       setState(() {});

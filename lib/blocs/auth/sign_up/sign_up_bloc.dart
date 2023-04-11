@@ -82,10 +82,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
               'name': event.name,
               'phone_number': event.phoneNumber,
             }).eq('user_id', res.user!.id);
-            await supabaseClient.auth.signInWithPassword(
-              email: event.email,
-              password: event.password,
-            );
+
             add(GetUserEvent());
           } else {
             emit(SignUpFailureState());

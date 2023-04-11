@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medcare_user/ui/screen/signup_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../blocs/auth/sign_up/sign_up_bloc.dart';
 import '../../widgets/change_password.dart';
 import '../../widgets/custom_alert_dialog.dart';
 import '../../widgets/drawer_button.dart';
@@ -14,6 +17,14 @@ class SettingsSection extends StatefulWidget {
 }
 
 class _SettingsSectionState extends State<SettingsSection> {
+  SignUpBloc signUpBloc = SignUpBloc();
+
+  @override
+  void initState() {
+    super.initState();
+    signUpBloc.add(GetUserEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -32,11 +43,31 @@ class _SettingsSectionState extends State<SettingsSection> {
                 ),
           ),
           const SizedBox(height: 20),
-          DrawerButton(
-            iconData: Icons.person_outline,
-            label: 'UPDATE PROFILE',
-            onPressed: () {},
-            isSelected: false,
+          BlocProvider<SignUpBloc>.value(
+            value: signUpBloc,
+            child: BlocBuilder<SignUpBloc, SignUpState>(
+              builder: (context, state) {
+                if (state is SignUpSuccessState) {
+                  return DrawerButton(
+                    iconData: Icons.person_outline,
+                    label: 'UPDATE PROFILE',
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => Register(
+                            updateMode: true,
+                            userDetails: state.userDetails,
+                          ),
+                        ),
+                      );
+                    },
+                    isSelected: false,
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              },
+            ),
           ),
           const SizedBox(
             height: 10,

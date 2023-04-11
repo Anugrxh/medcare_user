@@ -1,353 +1,237 @@
 import 'package:flutter/material.dart';
-import 'package:medcare_user/ui/screen/home_screen.dart';
-import 'package:medcare_user/ui/screen/login_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medcare_user/ui/widgets/custom_button.dart';
+import 'package:medcare_user/ui/widgets/custom_card.dart';
+import 'package:medcare_user/util/value_validators.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+import '../../blocs/auth/sign_up/sign_up_bloc.dart';
+import '../widgets/custom_alert_dialog.dart';
+import 'home_screen.dart';
+import 'login_screen.dart';
+
+class Register extends StatefulWidget {
+  const Register({super.key});
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _SignUpState extends State<SignUp> {
-  TextEditingController emailController = TextEditingController();
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  bool _isObsecure = true;
+class _RegisterState extends State<Register> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  bool _isObscure = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(0),
-        child: Stack(
-          children: [
-            Image.asset(
-              "assets/image/bg.png",
-              width: MediaQuery.of(context).size.width,
-              fit: BoxFit.fitWidth,
-            ),
-            Form(
-              autovalidateMode: AutovalidateMode.always,
-              key: formKey,
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  Row(
-                    children: const [
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "New User",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic,
-                            shadows: <Shadow>[
-                              Shadow(
-                                offset: Offset(6.0, 6.0),
-                                blurRadius: 10.0,
-                                color: Color.fromARGB(150, 0, 0, 0),
-                              )
-                            ],
-                          ),
+      body: BlocProvider<SignUpBloc>(
+        create: (context) => SignUpBloc(),
+        child: BlocConsumer<SignUpBloc, SignUpState>(
+          listener: (context, state) {
+            if (state is SignUpFailureState) {
+              showDialog(
+                context: context,
+                builder: (context) => const CustomAlertDialog(
+                  title: 'Failed',
+                  message:
+                      'Please check your email and password and try again.',
+                  primaryButtonLabel: 'Ok',
+                ),
+              );
+            } else if (state is SignUpSuccessState) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                ),
+              );
+            }
+          },
+          builder: (context, state) {
+            return Column(
+              children: [
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CustomPaint(
+                      size: const Size(double.infinity, 200),
+                      painter: ArcPainter(),
+                    ),
+                    Column(
+                      children: [
+                        const Icon(
+                          Icons.medical_information_outlined,
+                          color: Colors.white,
+                          size: 50,
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 100,
-                  ),
-
-                  // ignore: prefer_const_constructors
-                  Text(
-                    "Sign up",
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      shadows: <Shadow>[
-                        Shadow(
-                          offset: Offset(6.0, 6.0),
-                          blurRadius: 10.0,
-                          color: Color.fromARGB(150, 0, 0, 0),
-                        )
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          'MEDCARE',
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                        ),
                       ],
-                      color: Colors.white,
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
                     ),
+                  ],
+                ),
+                Text(
+                  'Welcome',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  child: Text(
+                    'Enter your email and password to Register a new account.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.black,
+                        ),
                   ),
-
-                  const SizedBox(
-                    height: 60,
-                  ),
-                  Padding(
+                ),
+                Expanded(
+                  child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
-                      controller: emailController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Enter Name";
-                        }
-                      },
-                      obscureText: false,
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 10,
+                    child: Form(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      key: _formKey,
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          CustomCard(
+                            child: TextFormField(
+                              controller: _nameController,
+                              decoration: const InputDecoration(
+                                hintText: 'Name',
+                              ),
+                              validator: validateAlphanumeric,
+                            ),
                           ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0),
+                          const SizedBox(height: 10),
+                          CustomCard(
+                            child: TextFormField(
+                              controller: _phoneNumberController,
+                              decoration: const InputDecoration(
+                                hintText: 'Phone Number',
+                              ),
+                              validator: validateNumeric,
+                            ),
                           ),
-                          labelText: 'Name',
-                          suffixIcon: Icon(Icons.person_add_alt_1_outlined)),
-                    ),
-
-                    //TextField(
-                    //   decoration: InputDecoration(
-                    //     border: OutlineInputBorder(
-                    //       borderRadius: BorderRadius.circular(30.0),
-                    //     ),
-                    //     contentPadding: EdgeInsets.symmetric(
-                    //       horizontal: 20,
-                    //       vertical: 15,
-                    //     ),
-                    //     filled: true,
-                    //     hintStyle: TextStyle(color: Colors.grey[800]),
-                    //     hintText: "Enter Your Username",
-                    //     fillColor: Color(0xF9F7F7),
-                    //     suffixIcon: Icon(
-                    //       Icons.person_add_alt_1_outlined,
-                    //     ),
-                    //   ),
-                    // ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.trim().length < 10) {
-                          return "Enter Phone Number";
-                        }
-                      },
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 10,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        labelText: 'Phone',
-                      ),
-                    ),
-
-                    //TextField(
-                    //   decoration: InputDecoration(
-                    //     border: OutlineInputBorder(
-                    //       borderRadius: BorderRadius.circular(30.0),
-                    //     ),
-                    //     contentPadding: EdgeInsets.symmetric(
-                    //       horizontal: 20,
-                    //       vertical: 15,
-                    //     ),
-                    //     filled: true,
-                    //     hintStyle: TextStyle(color: Colors.grey[800]),
-                    //     hintText: "Enter Your Password",
-                    //     fillColor: Color(0xF9F7F7),
-                    //     suffixIcon: Icon(Icons.remove_red_eye),
-                    //   ),
-                    // ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.trim().length < 0) {
-                          return "Enter Date of birth";
-                        }
-                      },
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 10,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        labelText: 'Date of birth',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.trim().length < 2) {
-                          return "Enter Your Sex";
-                        }
-                      },
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 10,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        labelText: 'Sex',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.trim().length < 8) {
-                          return "Enter password";
-                        }
-                      },
-                      obscureText: _isObsecure,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 10,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        labelText: 'Password',
-                        suffixIcon: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _isObsecure = !_isObsecure;
-                            });
-                          },
-                          child: Icon(
-                            _isObsecure
-                                ? Icons.visibility_off
-                                : Icons.visibility,
+                          const SizedBox(height: 10),
+                          CustomCard(
+                            child: TextFormField(
+                              controller: _emailController,
+                              decoration: const InputDecoration(
+                                hintText: 'Email',
+                              ),
+                              validator: validateEmail,
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-
-                    //TextField(
-                    //   decoration: InputDecoration(
-                    //     border: OutlineInputBorder(
-                    //       borderRadius: BorderRadius.circular(30.0),
-                    //     ),
-                    //     contentPadding: EdgeInsets.symmetric(
-                    //       horizontal: 20,
-                    //       vertical: 15,
-                    //     ),
-                    //     filled: true,
-                    //     hintStyle: TextStyle(color: Colors.grey[800]),
-                    //     hintText: "Enter Your Password",
-                    //     fillColor: Color(0xF9F7F7),
-                    //     suffixIcon: Icon(Icons.remove_red_eye),
-                    //   ),
-                    // ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.trim().length < 8) {
-                          return "Enter password";
-                        }
-                      },
-                      obscureText: _isObsecure,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 10,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        labelText: 'Confirm Password',
-                        suffixIcon: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _isObsecure = !_isObsecure;
-                            });
-                          },
-                          child: Icon(
-                            _isObsecure
-                                ? Icons.visibility_off
-                                : Icons.visibility,
+                          const SizedBox(height: 10),
+                          CustomCard(
+                            child: TextFormField(
+                              obscureText: _isObscure,
+                              controller: _passwordController,
+                              decoration: InputDecoration(
+                                hintText: 'Password',
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    _isObscure = !_isObscure;
+                                    setState(() {});
+                                  },
+                                  icon: Icon(
+                                    _isObscure
+                                        ? Icons.visibility_off_outlined
+                                        : Icons.visibility_outlined,
+                                  ),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Please enter your password';
+                                }
+                                return null;
+                              },
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 10),
+                          CustomCard(
+                            child: TextFormField(
+                              obscureText: _isObscure,
+                              controller: _confirmPasswordController,
+                              decoration: const InputDecoration(
+                                hintText: 'Confirm Password',
+                              ),
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Please re-enter your password';
+                                } else if (_passwordController.text.trim() !=
+                                    _confirmPasswordController.text.trim()) {
+                                  return 'Passwords doesnt match.';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          CustomButton(
+                            isLoading: state is SignUpLoadingState,
+                            buttonColor: Colors.blue,
+                            labelColor: Colors.white,
+                            label: 'Register',
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                BlocProvider.of<SignUpBloc>(context).add(
+                                  CreateUserEvent(
+                                    name: _nameController.text.trim(),
+                                    email: _emailController.text.trim(),
+                                    phoneNumber:
+                                        _phoneNumberController.text.trim(),
+                                    password: _passwordController.text.trim(),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          const SizedBox(height: 30),
+                          Text(
+                            'Already have an account?',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: Colors.black,
+                                ),
+                          ),
+                          const SizedBox(height: 5),
+                          CustomButton(
+                            labelColor: Colors.blue,
+                            label: 'Login',
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          const SizedBox(height: 50),
+                        ],
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  GestureDetector(
-                    onTap: () {
-                      if (formKey.currentState!.validate()) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Login()));
-                      }
-                    },
-                    child: Material(
-                      color: Color(0xFF797EF6),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18)),
-                      child: const Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-                        child: Text(
-                          "SignUp",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:medcare_user/ui/screen/home_screen.dart';
 import 'package:medcare_user/ui/screen/login_screen.dart';
-import 'package:medcare_user/ui/screen/profile_screen.dart';
-import 'package:medcare_user/ui/screen/signup_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'ui/screen/splash_screen.dart';
+void main() async {
+  await Supabase.initialize(
+    url: 'https://nrkcnsvzixpxysgqcrfd.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ya2Nuc3Z6aXhweHlzZ3FjcmZkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY3NzA1ODYxOSwiZXhwIjoxOTkyNjM0NjE5fQ.rDYJRGbNlap2HwCqGU9pWkOlJmBa2eMK_-r8o0YRU5U',
+  );
 
-void main() {
   runApp(const MyApp());
 }
 
@@ -18,9 +20,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'UserApp',
+      title: 'Medcare',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        inputDecorationTheme: ThemeData.light().inputDecorationTheme.copyWith(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 10,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide.none,
+              ),
+            ),
       ),
       home: const Login(),
     );

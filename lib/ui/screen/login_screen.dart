@@ -63,7 +63,7 @@ class _LoginState extends State<Login> {
             }
           },
           builder: (context, state) {
-            return Column(
+            return ListView(
               children: [
                 Stack(
                   alignment: Alignment.center,
@@ -94,21 +94,22 @@ class _LoginState extends State<Login> {
                     ),
                   ],
                 ),
-                const Expanded(
-                  child: SizedBox(),
-                ),
-                Text(
-                  'Welcome',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                const SizedBox(height: 30),
+                Center(
+                  child: Text(
+                    'Welcome',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
                     'Enter your email and password to login.',
+                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.black,
                         ),

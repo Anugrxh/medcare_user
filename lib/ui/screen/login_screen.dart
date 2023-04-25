@@ -129,7 +129,7 @@ class _LoginState extends State<Login> {
                             decoration: const InputDecoration(
                               hintText: 'Email',
                             ),
-                            validator: validateEmail,
+                            validator: emailValidator,
                           ),
                         ),
                         const SizedBox(height: 10),

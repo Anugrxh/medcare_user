@@ -169,7 +169,7 @@ class _RegisterState extends State<Register> {
                               decoration: const InputDecoration(
                                 hintText: 'Name',
                               ),
-                              validator: validateAlphanumeric,
+                              validator: alphanumericWithSpaceValidator,
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -179,7 +179,7 @@ class _RegisterState extends State<Register> {
                               decoration: const InputDecoration(
                                 hintText: 'Phone Number',
                               ),
-                              validator: validateNumeric,
+                              validator: phoneNumberValidator,
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -189,7 +189,7 @@ class _RegisterState extends State<Register> {
                               decoration: const InputDecoration(
                                 hintText: 'Email',
                               ),
-                              validator: validateEmail,
+                              validator: emailValidator,
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -211,15 +211,11 @@ class _RegisterState extends State<Register> {
                                   ),
                                 ),
                               ),
-                              validator: (value) {
-                                if (widget.updateMode) {
-                                  return null;
-                                }
-                                if (value == null || value.trim().isEmpty) {
-                                  return 'Please enter your password';
-                                }
-                                return null;
-                              },
+                              validator: widget.updateMode
+                                  ? (value) {
+                                      return null;
+                                    }
+                                  : passwordValidator,
                             ),
                           ),
                           const SizedBox(height: 10),
